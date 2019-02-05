@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<!-- Creating a game for fun and to practice my php syntax while exploring concepts like polymorphism and inheritance.
+Also my first use of arrays and loops in php. Soon realised this isn't really what php was designed to do so this 
+project is on hold for now -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Elf vs Orc</title>
+    </head>
+    <body>
+        <h2>Room 1</h2>
+        
+        <?php
+        
+        //Enviroment 
+        class Room{
+            function __construct($name, $discription, $minons, $elf) {
+                $this->name = $name;
+                $this->discription = $discription;
+                $this->roomMinons = $minons;
+                $this->elf = $elf;
+                battle();
+            }
+            private $name = null;
+            private $discription = "";
+            private $roomMinons =array();
+            private $elf = null;
+            public function setVisualAssets(){
+                // Create visual assets
+            }
+            public function countMinions($roomMinons) {
+                count($roomMinons);
+            }
+            public function removeMinion(Int $i){
+                unset($roomMinons[$i]);
+            }
+            public function checkMinions(){
+                foreach($roomMinons as $key => $minion){
+                    if($minion->getHp() <= 0){
+                        removeMinion($key);
+                    }
+                }
+            }
+
+        }
+        //Beings to populate world
+        $minionName = Array(
+            "Gormek","Grimm","Nashkar","Blog","Tyrum","Oberon","Skittleskull","Tudan","Obakan",
+            "Khagan","Jahangir","Ishtak","Azlar"
+        );
+        $libraryString = "You wake to find that yourself confronted by an Orc's and three Goblins.
+                            You are cornered so your options are limited to either attacking or to die.";
+        
+        class Being{
+            private $name = null;
+            private $hp = null;
+            private $armor = null;
+            private $agility = null;
+            private $isAlive = true;          
+            function attack(Being $b){               
+                $rollAgility = diceRoll();
+                if(($rollAgility + $agility) > $b->agility){
+                    $rollDamage = diceRoll();
+                    if($rollDamage > $b-> armor){
+                        $b->hp -= $rollDamage - $b->armor;
+                        echo $name. " hit for ".$rollDamage - $b->armor."!";
+                    }
+                    else{
+                        echo $name ." hit ".$b->name." armor!";
+                    }   
+                }
+                else {
+                    echo $name ." missed ".$b->name."!";
+                    $b->counterAttack($this);
+                }    
+            }
+            function counterAttack (Being $b){
+                $rollDamage = diceRoll();
+                if($rollDamage > ($b-> armor - 2)){
+                    $b->hp -= ($rollDamage - $b->armor) + 5;
+                    echo $name. " counter attacked for ".$rollDamage - $b->armor."!";
+                }
+            } 
+            function flee (){
+                $rollEscape = diceRoll();
+                if($rollEscape + $agility > 20){
+                    return true;
+                }  else {
+                    return false;
+                }
+            }
+            function isAlive(){
+                if($hp > 0){
+                    
+                }else{
+                    echo $this->name . "Has Died!";
+                    $this->isAlive = false;
+                    if($this == Elf::class){
+                        echo "Game Over";
+                        gameOver();
+                    }
+                }
+            }
+            function getName() {
+                return $this->name;
+            }
+
+            function getHp() {
+                return $this->hp;
+            }
+
+            function getArmor() {
+                return $this->armor;
+            }
+
+            function getAgility() {
+                return $this->agility;
+            }
+
+            function getIsAlive() {
+                return $this->isAlive;
+            }
+
+            function setName($name) {
+                $this->name = $name;
+            }
+
+            function setHp($hp) {
+                $this->hp = $hp;
+            }
+
+            function setArmor($armor) {
+                $this->armor = $armor;
+            }
+
+            function setAgility($agility) {
+                $this->agility = $agility;
+            }
+
+            function setIsAlive($isAlive) {
+                $this->isAlive = $isAlive;
+            }
+
+
+        }
+        class Minon extends Being{
+            private static $minonCount = 0;
+            function addToMinonCount(){
+                function __construct() {    
+                    $name = $minionName[$minionCount];
+                    addToMinonCount();
+                    $name = null;
+                }    
+            }
+        }
+        class Orc extends Minon{
+            private $hp = 30;
+            private $armor = 5;
+            private $agility = 5;     
+        }
+        class Goblin extends Minon{
+            private $hp = 10;
+            private $armor = 0;
+            private $agility = 10;
+        }
+        class Elf extends Being{
+            function __construct($name) {
+                $this->name = $name;
+            }
+            private $name = "";
+            private $hp = 20;
+            private $armor = 6;
+            private $agility = 15;
+            
+            public function turn(){
+                //await input from buttons.
+            }
+        }  
+
+        //Testing
+        $evelyn = new Elf(Evelyn);
+        $gormek = new Orc();
+        $grimm = new Goblin();
+        $nashkar = new Goblin();
+        $blog = new Goblin();
+        $libraryMinions = Array($gormek,$grimm,$nashkar,$blog);
+        $library = new Room("Library",$libraryString,$libraryMinions ,$evelyn);
+
+        //Gameplay
+        function gameOver(){
+            //do something.
+        }
+        function diceRoll(){
+            return mt_rand(1, 20);           
+        }
+        function battle(Room $r){
+            
+            while ($r->$elf->$isAlive && $r->count($minions)>0) {
+                turn();
+            }
+        }
+        
+        
+        ?>
+    </body>
+</html>
